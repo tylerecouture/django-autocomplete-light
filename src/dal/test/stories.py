@@ -213,7 +213,7 @@ class SelectOption(BaseStory):
             self.toggle_autocomplete()
 
         self.case.assert_visible(self.dropdown_selector)
-        self.case.enter_text(self.input_selector, text)
+        self.case.enter_text(self.input_selector + ':focus', text)
         self.find_option(text).click()
 
     def clear_option(self):

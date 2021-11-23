@@ -18,7 +18,6 @@ class AdminForeignKeyTestCase(AlightStory, case.AdminMixin, case.OptionMixin,
         self.fill_name()
 
     def test_can_select_option(self):
-        breakpoint()
         option = self.create_option()
         story = stories.SelectOption(self)
         story.select_option(option.name)

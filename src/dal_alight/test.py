@@ -10,7 +10,7 @@ class AlightStory:
     container_selector = '.select2-container'
     dropdown_selector = '.autocomplete-light-box'
     input_selector = 'autocomplete-select input'
-    label_selector = '.select2-selection__rendered'
+    label_selector = 'autocomplete-select [slot=deck] [data-value]'
     labels_selector = \
         '.select2-selection__rendered .select2-selection__choice'
     option_selector = '.autocomplete-light-box [data-value]'

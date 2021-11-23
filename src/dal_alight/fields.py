@@ -15,9 +15,11 @@ class ModelAlightWidget(AlightWidgetMixin, QuerySetSelectMixin, Select):
         if value:
             choice = self.field.queryset.filter(pk=value).first()
             deck = self.field.render_choice(choice)
+        attrs = attrs or dict()
+        attrs['slot'] = 'select'
         return mark_safe(f'''
             <autocomplete-select>
-                {super().render(name, value, dict(slot="select"))}
+                {super().render(name, value, attrs)}
                 <div slot="deck" class="deck">{deck}</div>
                 <autocomplete-light slot="input" url="{self.url}">
                   <input slot="input" type="text" class="vTextField" />
@@ -63,4 +65,4 @@ class ModelAlight(forms.ModelChoiceField):
         )
 
     def render_choice(self, choice):
-        return f'<div data-value="{choice.pk}">{choice} (templated)</div>'
+        return f'<div data-value="{choice.pk}">{choice}</div>'
