@@ -5,7 +5,7 @@ from django.db.models.signals import post_migrate
 
 
 class TestApp(AppConfig):
-    name = 'alight_demo'
+    name = 'alight_foreign_key'
 
     def ready(self):
         post_migrate.connect(fixtures, sender=self)

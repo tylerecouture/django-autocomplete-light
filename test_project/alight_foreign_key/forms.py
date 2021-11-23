@@ -6,7 +6,7 @@ from django import forms
 from .models import TModel
 
 
-class TForm(FutureModelForm):
+class TForm(forms.ModelForm):
     test = autocomplete.ModelAlight(queryset=TModel.objects.all())
 
     class Meta:

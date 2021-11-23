@@ -27,6 +27,26 @@ from .widgets import (
 )
 
 
+def urls(*form_classes):
+    """
+    Create a list of url patterns, to be called in url.py.
+
+    Example::
+
+        urlpatterns += autocomplete.urls(YourForm, YourOtherForm)
+
+    Iterate over the fields to call the as_url() method for fields which define
+    it.
+    """
+    result = []
+    for form_class in form_classes:
+        for key, value in form_class.declared_fields.items():
+            if not hasattr(type(value), 'as_url'):
+                continue
+            result.append(value.as_url(form_class))
+    return result
+
+
 def _installed(*apps):
     for app in apps:
         if app not in django_settings.INSTALLED_APPS:
@@ -92,4 +112,7 @@ if _installed('gm2m') and _installed('dal_queryset_sequence'):
     from dal_gm2m_queryset_sequence.fields import GM2MQuerySetSequenceField
 
 if _installed('dal_alight'):
-    from dal_alight.fields import *
+    from dal_alight.fields import (
+        ModelAlightWidget,
+        ModelAlight,
+    )

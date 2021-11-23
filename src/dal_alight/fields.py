@@ -20,36 +20,28 @@ class ModelAlightWidget(AlightWidgetMixin, QuerySetSelectMixin, Select):
                 {super().render(name, value, dict(slot="select"))}
                 <div slot="deck" class="deck">{deck}</div>
                 <autocomplete-light slot="input" url="{self.url}">
-                  <input slot="input" type="text" />
+                  <input slot="input" type="text" class="vTextField" />
                 </autocomplete-light>
             </autocomplete-select>
         ''')
 
 
 class ModelAlight(forms.ModelChoiceField):
+    class AutocompleteView(BaseQuerySetView, ViewMixin):
+        field = None
+
+        def get(self, request, *args, **kwargs):
+            return http.HttpResponse(
+                b'\n'.join([
+                    self.field.render_choice(choice).encode('utf8')
+                    for choice in self.get_queryset()
+                ]),
+                content_type='text/html',
+            )
+
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('widget', ModelAlightWidget())
         super().__init__(*args, **kwargs)
-
-        from django.views import generic
-
-        class TestView(BaseQuerySetView, ViewMixin):
-            template_name = 'dal_alight.html'
-            field = self
-
-            def get(self, request, *args, **kwargs):
-                return http.HttpResponse(
-                    b'\n'.join([
-                        self.field.render_choice(choice).encode('utf8')
-                        for choice in self.field.queryset[:10]
-                    ]),
-                    content_type='text/html',
-                )
-
-        self.view = TestView
-
-    def render_choice(self, choice):
-        return f'<div data-value="{choice.pk}">{choice} (templated)</div>'
 
     def as_url(self, form):
         """Return url."""
@@ -66,6 +58,9 @@ class ModelAlight(forms.ModelChoiceField):
         self.widget.field = self
         return urls.path(
             url_name,
-            self.view.as_view(field=self, queryset=self.queryset),
+            self.AutocompleteView.as_view(field=self, queryset=self.queryset),
             name=url_name
         )
+
+    def render_choice(self, choice):
+        return f'<div data-value="{choice.pk}">{choice} (templated)</div>'

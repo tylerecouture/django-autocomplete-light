@@ -7,18 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('alight_demo', '0001_initial'),
+        ('alight_foreign_key', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='tmodel',
             name='for_inline',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='inline_test_models', to='alight_demo.TModel'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='inline_test_models', to='alight_foreign_key.TModel'),
         ),
         migrations.AlterField(
             model_name='tmodel',
             name='test',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='related_test_models', to='alight_demo.TModel'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='related_test_models', to='alight_foreign_key.TModel'),
         ),
     ]

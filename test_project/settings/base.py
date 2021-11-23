@@ -93,7 +93,7 @@ INSTALLED_APPS = [
     'django_extensions',
 
     'dal_alight',
-    'alight_demo',
+    'alight_foreign_key',
 ]
 
 

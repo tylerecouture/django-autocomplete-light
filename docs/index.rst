@@ -37,6 +37,14 @@ API
 
    api
 
+Experimental
+------------
+
+.. toctree::
+   :maxdepth: 3
+
+   tutorial_4
+
 Indices and tables
 ==================
 
