@@ -6,11 +6,15 @@ from django.utils.safestring import mark_safe
 from dal.views import BaseQuerySetView, ViewMixin
 from dal.widgets import Select, SelectMultiple, QuerySetSelectMixin
 
+from .widgets import AlightWidgetMixin
 
-class ModelAlightWidget(QuerySetSelectMixin, Select):
+
+class ModelAlightWidget(AlightWidgetMixin, QuerySetSelectMixin, Select):
     def render(self, name, value, attrs=None, renderer=None):
-        choice = self.field.queryset.filter(pk=value).first()
-        deck = self.field.render_choice(choice) if choice else ''
+        deck = ''
+        if value:
+            choice = self.field.queryset.filter(pk=value).first()
+            deck = self.field.render_choice(choice)
         return mark_safe(f'''
             <autocomplete-select>
                 {super().render(name, value, dict(slot="select"))}
