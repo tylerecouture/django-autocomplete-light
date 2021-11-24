@@ -83,6 +83,15 @@ class BaseQuerySetView(ViewMixin, BaseListView):
     search_fields = []
     split_words = None
     template = None
+    secure_queryset = lambda req, qs: qs
+
+    @classmethod
+    def clone(cls, *mixins, **attributes):
+        """Return a subclass with the given attributes.
+
+        If a model is found, it will prefix the class name with the model.
+        """
+        return type('Dynamic' + cls.__name__, (cls,) + mixins, attributes)
 
     def has_more(self, context):
         """For widgets that have infinite-scroll feature."""
@@ -107,6 +116,7 @@ class BaseQuerySetView(ViewMixin, BaseListView):
         """Filter the queryset with GET['q']."""
         qs = super(BaseQuerySetView, self).get_queryset()
 
+        qs = self.secure_queryset(self.request, qs)
         qs = self.get_search_results(qs, self.q)
 
         return qs

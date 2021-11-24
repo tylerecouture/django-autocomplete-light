@@ -3,10 +3,14 @@ from django.conf import settings
 from django.urls import include, re_path as url
 from django.contrib import admin
 
+from dal import autocomplete
+
 import views
 
 
 urlpatterns = [
+    url(r'^autocomplete/', include('dal.urls')),
+
     url(r'^$', views.IndexView.as_view()),
 
     url(r'^admin/', admin.site.urls),

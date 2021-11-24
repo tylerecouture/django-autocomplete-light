@@ -23,13 +23,13 @@ class AdminForeignKeyTestCase(AlightStory, case.AdminMixin, case.OptionMixin,
         story.select_option(option.name)
         story.assert_selection_persists(option.pk, option.name)
 
-'''
     def test_can_select_option_in_first_inline(self):
         option = self.create_option()
         story = stories.InlineSelectOption(self, inline_number=0)
         story.select_option(option.name)
         story.assert_selection(option.pk, option.name)
 
+'''
     def test_can_select_option_in_first_extra_inline(self):
         option = self.create_option()
         story = stories.InlineSelectOption(self, inline_number=3)

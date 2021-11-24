@@ -20,31 +20,18 @@ Note that using this module is optional.
 from django.conf import settings as django_settings
 
 from .forms import FutureModelForm
+from .model_forms import (
+    formfield,
+    modelform_factory,
+    ModelFormMetaclass,
+    ModelForm,
+)
+from .urls import urls
 from .views import ViewMixin
 from .widgets import (
     Select,
     SelectMultiple,
 )
-
-
-def urls(*form_classes):
-    """
-    Create a list of url patterns, to be called in url.py.
-
-    Example::
-
-        urlpatterns += autocomplete.urls(YourForm, YourOtherForm)
-
-    Iterate over the fields to call the as_url() method for fields which define
-    it.
-    """
-    result = []
-    for form_class in form_classes:
-        for key, value in form_class.declared_fields.items():
-            if not hasattr(type(value), 'as_url'):
-                continue
-            result.append(value.as_url(form_class))
-    return result
 
 
 def _installed(*apps):

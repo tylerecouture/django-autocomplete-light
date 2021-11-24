@@ -94,6 +94,7 @@ INSTALLED_APPS = [
 
     'dal_alight',
     'alight_foreign_key',
+    'alight_modelform',
 ]
 
 
@@ -136,6 +137,7 @@ MIDDLEWARE_CLASSES += [
 ]
 
 MIDDLEWARE = [
+    'threadlocals.middleware.ThreadLocalMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

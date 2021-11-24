@@ -3,9 +3,11 @@ from django import urls
 from django import http
 from django.utils.safestring import mark_safe
 
-from dal.views import BaseQuerySetView, ViewMixin
 from dal.widgets import Select, SelectMultiple, QuerySetSelectMixin
 
+from threadlocals.threadlocals import get_current_request
+
+from .views import AutocompleteView
 from .widgets import AlightWidgetMixin
 
 
@@ -14,7 +16,7 @@ class ModelAlightWidget(AlightWidgetMixin, QuerySetSelectMixin, Select):
         deck = ''
         if value:
             choice = self.field.queryset.filter(pk=value).first()
-            deck = self.field.render_choice(choice)
+            deck = self.field.view().render_choice(choice)
         attrs = attrs or dict()
         attrs['slot'] = 'select'
         return mark_safe(f'''
@@ -29,21 +31,21 @@ class ModelAlightWidget(AlightWidgetMixin, QuerySetSelectMixin, Select):
 
 
 class ModelAlight(forms.ModelChoiceField):
-    class AutocompleteView(BaseQuerySetView, ViewMixin):
-        field = None
+    view = AutocompleteView
 
-        def get(self, request, *args, **kwargs):
-            return http.HttpResponse(
-                b'\n'.join([
-                    self.field.render_choice(choice).encode('utf8')
-                    for choice in self.get_queryset()
-                ]),
-                content_type='text/html',
-            )
-
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('widget', ModelAlightWidget())
+    def __init__(self, *args, view=None, url=None, **kwargs):
+        kwargs.setdefault('widget', ModelAlightWidget)
         super().__init__(*args, **kwargs)
+        self.widget.field = self
+        self.view = view or AutocompleteView
+        if url:
+            self.widget.url = url
+
+    def __deepcopy__(self, memo):
+        result = super().__deepcopy__(memo)
+        request = get_current_request()
+        result.queryset = result.view(request=request).secure_queryset(self.queryset)
+        return result
 
     def as_url(self, form):
         """Return url."""
@@ -57,12 +59,8 @@ class ModelAlight(forms.ModelChoiceField):
             name,
         ])
         self.widget.url = url_name
-        self.widget.field = self
         return urls.path(
             url_name,
-            self.AutocompleteView.as_view(field=self, queryset=self.queryset),
+            self.view.as_view(queryset=self.queryset),
             name=url_name
         )
-
-    def render_choice(self, choice):
-        return f'<div data-value="{choice.pk}">{choice}</div>'
