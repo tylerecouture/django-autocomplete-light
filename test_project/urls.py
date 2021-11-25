@@ -9,7 +9,7 @@ import views
 
 
 urlpatterns = [
-    url(r'^autocomplete/', include('dal.urls')),
+    url(r'^autocomplete/', include('dal_alight.urls')),
 
     url(r'^$', views.IndexView.as_view()),
 

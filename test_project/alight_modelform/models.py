@@ -1,3 +1,5 @@
+import djhacker
+
 from dal import autocomplete
 from django.db import models
 
@@ -25,4 +27,4 @@ class TModel(models.Model):
         return self.name
 
 
-autocomplete.formfield(TModel.test)
+djhacker.formfield(TModel.test)

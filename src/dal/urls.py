@@ -1,10 +1,6 @@
 from django.urls import path
 
 
-# this serves as a registry as people call formfield()
-urlpatterns = []
-
-
 def urls(*form_or_model_classes):
     """
     Create a list of url patterns, to be called in url.py.
